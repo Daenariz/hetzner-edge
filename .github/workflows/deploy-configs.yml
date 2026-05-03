@@ -1,0 +1,28 @@
+name: Deploy Configs
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-configs:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          cat <<EOF > ssh_config
+          # jobs run on portuus (100.64.0.5)
+          Host 100.64.0.5
+            Hostname 127.0.0.1
+            
+          Host *
+            Port 2299
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+            IdentityFile $DEPLOY_KEY_PATH
+          EOF
+
+      - run: deploy . --skip-checks
