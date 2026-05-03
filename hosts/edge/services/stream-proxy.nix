@@ -1,9 +1,9 @@
 # TCP/UDP stream proxy: forwards non-HTTP traffic over Tailnet to portuus.
 # Requires nginx stream module.
-{ ... }:
+{ constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   ip = c.hosts.portuus.ip;
   rd = c.services.rustdesk.ports;
   mc = c.services;

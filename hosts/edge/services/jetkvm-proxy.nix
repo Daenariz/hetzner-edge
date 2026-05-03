@@ -1,7 +1,7 @@
-{ ... }:
+{ constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
 in
 {
   services.nginx = {

@@ -1,7 +1,7 @@
-{ outputs, config, ... }:
+{ outputs, config, constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   gl = c.services.gitlab;
   pages = c.services.gitlab-pages;
 in

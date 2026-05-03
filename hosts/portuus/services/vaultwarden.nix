@@ -1,7 +1,7 @@
-{ outputs, config, ... }:
+{ outputs, config, constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   s = c.services.vaultwarden;
 in
 {

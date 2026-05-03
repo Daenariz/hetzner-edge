@@ -3,11 +3,12 @@
   config,
   pkgs,
   lib,
+  constants,
   ...
 }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   s = c.services.nextcloud;
 
   package = pkgs.nextcloud32.overrideAttrs (old: rec {

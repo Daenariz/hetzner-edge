@@ -1,7 +1,7 @@
-{ inputs, ... }:
+{ inputs, constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   s = c.services.jirafeau;
 in
 {

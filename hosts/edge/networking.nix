@@ -1,5 +1,7 @@
+{ constants, ... }:
+
 let
-  c = import ../../constants.nix;
+  c = constants;
 in
 {
   networking.hostName = "edge";

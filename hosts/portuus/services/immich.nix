@@ -1,7 +1,7 @@
-{ outputs, config, lib, ... }:
+{ outputs, config, lib, constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   s = c.services.immich;
 in
 {

@@ -54,7 +54,7 @@
         nixpkgs.lib.nixosSystem {
           inherit system modules;
           specialArgs = {
-            inherit inputs outputs;
+            inherit inputs outputs constants;
             lib =
               (import nixpkgs {
                 inherit system overlays;

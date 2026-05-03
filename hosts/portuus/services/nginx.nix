@@ -1,7 +1,7 @@
-{ inputs, ... }:
+{ inputs, constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
 in
 {
   imports = [ inputs.synix.nixosModules.nginx ];

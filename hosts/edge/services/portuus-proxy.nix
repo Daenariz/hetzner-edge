@@ -1,10 +1,10 @@
 # All public HTTP traffic enters via edge and is proxied over the Tailnet
 # to portuus's internal nginx (port 80, no TLS).
 # TLS is terminated on edge only.
-{ lib, ... }:
+{ lib, constants, ... }:
 
 let
-  c = import ../../../constants.nix;
+  c = constants;
   portuusIP = c.hosts.portuus.ip;
   s = c.services;
 
