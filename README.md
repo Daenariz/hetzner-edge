@@ -93,8 +93,16 @@ Activate the Hetzner rescue system and mount the [NixOS minimal ISO](https://nix
 
 ### 2. SSH into the machine
 
+On the Hetzner machine (via console), set a password for the nixos user:
+
 ```bash
-ssh root@<server-ip>
+passwd
+```
+
+Then SSH in from your local machine:
+
+```bash
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no nixos@<server-ip>
 ```
 
 ### 3. Run the install script
@@ -158,7 +166,17 @@ ssh -p 2299 steffen@<server-ip>
 
 Headscale, coturn, and openssh should be up.
 
-### 8. Disconnect portuus from the old Tailnet
+### 8. Point `hs.portuus.de` to the new edge IP
+
+Update the DNS A record for `hs.portuus.de` to the new edge public IP.
+Wait for propagation. All other DNS records stay on portuus for now.
+
+```bash
+# Verify DNS is pointing to the new edge
+dig +short hs.portuus.de
+```
+
+### 9. Disconnect portuus from the old Tailnet
 
 On portuus:
 
@@ -167,7 +185,7 @@ tailscale down
 tailscale logout
 ```
 
-### 9. Create portuus node on the new Headscale
+### 10. Create portuus node on the new Headscale
 
 On edge:
 
@@ -176,7 +194,7 @@ headscale users create portuus
 headscale preauthkeys create --user portuus --reusable --expiration 1h
 ```
 
-### 10. Connect portuus to the new Headscale
+### 11. Connect portuus to the new Headscale
 
 On portuus:
 
@@ -184,7 +202,7 @@ On portuus:
 tailscale up --login-server=https://hs.portuus.de --auth-key=<preauth-key>
 ```
 
-### 11. Verify Tailnet connectivity
+### 12. Verify Tailnet connectivity
 
 From edge:
 
@@ -192,16 +210,24 @@ From edge:
 ping 100.64.0.5  # portuus Tailnet IP
 ```
 
-### 12. Point `hs.portuus.de` to new edge IP
+---
 
-Update the DNS A record for `hs.portuus.de` to the new edge public IP.
-All other DNS records stay on portuus for now.
+### 13. Deploy `master` to portuus
+
+Portuus is reachable via Tailnet now. Deploy from your local machine:
+
+```bash
+deploy .#portuus
+```
+
+After this, the GitHub Actions runner is registered against `stherm/portuus` and
+all future deploys happen automatically via deploy-rs on push to `master`.
 
 ---
 
 **`master` setup is complete.** Edge runs headscale, coturn, openssh. Portuus is
 on the Tailnet and still serves all traffic directly. Everything works as before,
-just with the new edge.
+just with the new edge. All future changes are deployed automatically.
 
 ---
 
@@ -210,39 +236,24 @@ just with the new edge.
 Route all public traffic through edge. After this, portuus no longer needs any
 public-facing ports.
 
-### 13. Update all DNS records
+### 1. Update all DNS records
 
 Point **all** DNS records to the new edge public IP (see DNS table above).
 Wait for propagation.
 
-### 14. Deploy `edge-proxy` branch to edge
+### 2. Merge `edge-proxy` into `master` and push
 
 ```bash
-git checkout edge-proxy
-git push origin edge-proxy
-
-# Deploy from a machine with Tailnet access, or let the GitHub runner do it:
-deploy .#edge
+git checkout master
+git merge edge-proxy
+git push origin master
 ```
 
-This enables:
-- nginx reverse proxy for all portuus HTTP services (with ACME/TLS)
-- nginx stream proxy for Mail, Minecraft, Rustdesk
+deploy-rs will automatically deploy to both hosts. This enables:
+- **edge**: nginx reverse proxy for all HTTP services (with ACME/TLS) + nginx stream for Mail, Minecraft, Rustdesk
+- **portuus**: nginx only on Tailnet interface, no public ports, no TLS (terminated on edge)
 
-### 15. Deploy `edge-proxy` branch to portuus
-
-```bash
-deploy .#portuus
-```
-
-This changes portuus to:
-- nginx only listens on Tailnet interface (no public ports)
-- TLS disabled (terminated on edge)
-- Firewall closed for public traffic
-
-### 16. Verify all services
-
-Check that ACME certificates were issued and services are reachable:
+### 3. Verify all services
 
 ```bash
 curl -I https://git.portuus.de
