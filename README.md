@@ -81,24 +81,23 @@ deploy .#edge
 deploy .              # deploy all
 ```
 
-## Fresh Installation (Edge on Hetzner VPS)
+## Part 1: Fresh Installation (`master` branch)
 
-### Phase 1: Install edge with `master` branch
+Install edge with its own services (headscale, coturn, openssh, nginx) and
+connect portuus to the new Tailnet. This is the baseline — all services on
+portuus are still directly exposed as before.
 
-This installs edge with its own services only (headscale, coturn, openssh, nginx).
-No proxy to portuus yet.
-
-#### 1. Boot into NixOS Rescue
+### 1. Boot into NixOS Rescue
 
 Activate the Hetzner rescue system and mount the [NixOS minimal ISO](https://nixos.org/download/#nixos-iso).
 
-#### 2. SSH into the machine
+### 2. SSH into the machine
 
 ```bash
 ssh root@<server-ip>
 ```
 
-#### 3. Run the install script
+### 3. Run the install script
 
 ```bash
 sudo -i
@@ -111,7 +110,7 @@ sudo -i
 >   -n edge
 > ```
 
-#### 4. Set disk ID
+### 4. Set disk ID
 
 Edit `/tmp/nixos/hosts/edge/disks.sh` and set `SSD` to the correct disk ID:
 
@@ -119,7 +118,7 @@ Edit `/tmp/nixos/hosts/edge/disks.sh` and set `SSD` to the correct disk ID:
 ls /dev/disk/by-id/
 ```
 
-#### 5. Restore SSH host keys (before reboot!)
+### 5. Restore SSH host keys (before reboot!)
 
 sops-nix derives its age key from the SSH host key. To keep the same age identity
 (so existing secrets can be decrypted), restore the old host keys before rebooting:
@@ -144,14 +143,14 @@ chmod 644 /mnt/etc/ssh/ssh_host_ed25519_key.pub
 > sops updatekeys hosts/edge/secrets/secrets.yaml
 > ```
 
-#### 6. Reboot
+### 6. Reboot
 
 ```bash
 umount -Rl /mnt
 reboot now
 ```
 
-#### 7. Verify edge is running
+### 7. Verify edge is running
 
 ```bash
 ssh -p 2299 steffen@<server-ip>
@@ -159,9 +158,16 @@ ssh -p 2299 steffen@<server-ip>
 
 Headscale, coturn, and openssh should be up.
 
-### Phase 2: Connect portuus to the new Headscale
+### 8. Disconnect portuus from the old Tailnet
 
-#### 8. Create portuus node on Headscale
+On portuus:
+
+```bash
+tailscale down
+tailscale logout
+```
+
+### 9. Create portuus node on the new Headscale
 
 On edge:
 
@@ -170,15 +176,15 @@ headscale users create portuus
 headscale preauthkeys create --user portuus --reusable --expiration 1h
 ```
 
-#### 9. Connect portuus to the new Headscale
+### 10. Connect portuus to the new Headscale
 
-On portuus, update the Tailscale auth key and rejoin:
+On portuus:
 
 ```bash
 tailscale up --login-server=https://hs.portuus.de --auth-key=<preauth-key>
 ```
 
-#### 10. Verify Tailnet connectivity
+### 11. Verify Tailnet connectivity
 
 From edge:
 
@@ -186,16 +192,30 @@ From edge:
 ping 100.64.0.5  # portuus Tailnet IP
 ```
 
-### Phase 3: Switch DNS and enable edge proxy
+### 12. Point `hs.portuus.de` to new edge IP
 
-#### 11. Update DNS records
+Update the DNS A record for `hs.portuus.de` to the new edge public IP.
+All other DNS records stay on portuus for now.
 
-Point all DNS records to the **new edge public IP** (see DNS table above).
+---
+
+**`master` setup is complete.** Edge runs headscale, coturn, openssh. Portuus is
+on the Tailnet and still serves all traffic directly. Everything works as before,
+just with the new edge.
+
+---
+
+## Part 2: Enable edge proxy (`edge-proxy` branch)
+
+Route all public traffic through edge. After this, portuus no longer needs any
+public-facing ports.
+
+### 13. Update all DNS records
+
+Point **all** DNS records to the new edge public IP (see DNS table above).
 Wait for propagation.
 
-#### 12. Deploy `edge-proxy` branch
-
-Once DNS is pointing to edge and portuus is reachable via Tailnet:
+### 14. Deploy `edge-proxy` branch to edge
 
 ```bash
 git checkout edge-proxy
@@ -208,9 +228,19 @@ deploy .#edge
 This enables:
 - nginx reverse proxy for all portuus HTTP services (with ACME/TLS)
 - nginx stream proxy for Mail, Minecraft, Rustdesk
-- portuus no longer needs public-facing ports
 
-#### 13. Verify all services
+### 15. Deploy `edge-proxy` branch to portuus
+
+```bash
+deploy .#portuus
+```
+
+This changes portuus to:
+- nginx only listens on Tailnet interface (no public ports)
+- TLS disabled (terminated on edge)
+- Firewall closed for public traffic
+
+### 16. Verify all services
 
 Check that ACME certificates were issued and services are reachable:
 
