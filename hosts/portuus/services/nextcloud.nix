@@ -2,11 +2,13 @@
   outputs,
   config,
   pkgs,
+  lib,
   ...
 }:
 
 let
-  domain = config.networking.domain;
+  c = import ../../../constants.nix;
+  s = c.services.nextcloud;
 
   package = pkgs.nextcloud32.overrideAttrs (old: rec {
     version = "32.0.3";
@@ -25,8 +27,11 @@ in
     datadir = "/data/nextcloud";
     reverseProxy = {
       enable = true;
-      subdomain = "cloud";
+      subdomain = s.subdomain;
+      forceSSL = false; # TLS terminated on edge
     };
+    # Nextcloud needs to know it's behind HTTPS (edge terminates TLS)
+    https = lib.mkForce true;
     mailIntegration = {
       enable = true;
       smtpHost = config.mailserver.fqdn;
@@ -38,52 +43,9 @@ in
         contacts
         richdocuments
         tasks
-        # whiteboard # FIXME: https://github.com/sid115/portuus/issues/6
         ;
     };
-    # NOTE: office.portuus.de is down atm
-    # settings = {
-    #   richdocuments = {
-    #     wopi_url = "https://office.${domain}";
-    #   };
-    # };
   };
 
-  services.nginx.virtualHosts."cloud.${domain}".extraConfig = ''
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Robots-Tag "noindex,nofollow" always;
-    add_header X-Permitted-Cross-Domain-Policies "none" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header Strict-Transport-Security "max-age=15552000; includeSubDomains" always;
-  '';
-
-  # NOTE: office.portuus.de is down atm
-  # TODO: add to nextcloud nix-core nixos module
-  # services.collabora-online = {
-  #   enable = true;
-  #   port = 9980;
-  #   settings = {
-  #     # rely on reverse proxy for SSL
-  #     ssl = {
-  #       enable = false;
-  #       termination = true;
-  #     };
-  #     storage.wopi = {
-  #       "@allow" = true;
-  #       host = [ "cloud.${domain}" ];
-  #     };
-  #     server_name = "office.${domain}";
-  #   };
-  # };
-
-  # NOTE: office.portuus.de is down atm
-  # services.nginx.virtualHosts."office.${domain}" = {
-  #   forceSSL = true;
-  #   enableACME = true;
-  #   locations."/" = {
-  #     proxyPass = "http://127.0.0.1:${toString config.services.collabora-online.port}";
-  #     proxyWebsockets = true;
-  #   };
-  # };
+  # Security headers are set on edge (TLS termination point)
 }
