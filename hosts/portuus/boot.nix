@@ -1,4 +1,6 @@
 {
+  boot.loader.grub.memtest86.enable = true;
+
   boot.loader.grub = {
     enable = true;
     zfsSupport = true;

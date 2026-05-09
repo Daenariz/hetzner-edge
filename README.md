@@ -45,25 +45,6 @@ All DNS records point to the **edge** static IP (`178.105.18.167`):
 | `mail.portuus.de` | CNAME | portuus.de |
 | MX `portuus.de` | MX | portuus.de |
 
-## SSH Access
-
-Since no clients are on the Tailnet, use **edge as a jump host**:
-
-```
-Host edge
-    HostName 178.105.18.167
-    User steffen
-    Port 2299
-
-Host portuus
-    HostName 100.64.0.2
-    User steffen
-    Port 2299
-    ProxyJump edge
-```
-
-Then: `ssh edge` or `ssh portuus`
-
 ## Deploy
 
 Deployments run via GitHub Actions (self-hosted runner on portuus) using [deploy-rs](https://github.com/serokell/deploy-rs).
@@ -96,6 +77,31 @@ Managed with [sops-nix](https://github.com/Mic92/sops-nix). Keys configured in `
 ```bash
 sops hosts/edge/secrets/secrets.yaml
 sops hosts/portuus/secrets/secrets.yaml
+```
+
+## Troubleshooting
+
+### TPM Lockout (Tailscale fails to start)
+
+Portuus has a physical TPM. Tailscale encrypts its state with it. After unclean
+shutdowns (freezes), the TPM lockout counter triggers and tailscaled can't unseal
+its state. Fix by resetting the counter:
+
+```bash
+nix-shell -p tpm2-tools --run "sudo tpm2_dictionarylockout --clear-lockout -T device:/dev/tpmrm0"
+sudo systemctl restart tailscaled
+```
+
+### nginx not loading new config after rebuild
+
+`nixos-rebuild switch` doesn't always restart nginx. Verify and fix:
+
+```bash
+# Check which config nginx is actually using
+sudo cat /proc/$(pgrep -o nginx)/cmdline | tr '\0' '\n' | grep conf
+
+# Restart to load new config
+sudo systemctl restart nginx
 ```
 
 ## Useful Commands
