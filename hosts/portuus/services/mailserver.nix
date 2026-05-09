@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 
 {
   imports = [ inputs.synix.nixosModules.mailserver ];
@@ -6,6 +6,10 @@
   mailserver = {
     enable = true;
     stateVersion = 3;
+    # TLS certs from previous ACME run; edge handles ACME renewal going forward
+    certificateScheme = lib.mkForce "manual";
+    certificateFile = "/var/lib/acme/mail.portuus.de/fullchain.pem";
+    keyFile = "/var/lib/acme/mail.portuus.de/key.pem";
     accounts = {
       info = {
         aliases = [ "postmaster" ];

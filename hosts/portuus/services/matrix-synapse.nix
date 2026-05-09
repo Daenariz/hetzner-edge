@@ -45,6 +45,12 @@
     ];
   };
 
+  # TLS terminated on edge
+  services.nginx.virtualHosts."${config.networking.domain}" = {
+    enableACME = lib.mkForce false;
+    forceSSL = lib.mkForce false;
+  };
+
   # TODO: nix-core: toggle user if coturn and synapse are not running on the same machine
   sops.secrets."coturn/static-auth-secret" = {
     owner = lib.mkForce "matrix-synapse";
