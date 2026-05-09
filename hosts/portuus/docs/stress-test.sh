@@ -2,8 +2,9 @@
 set -euo pipefail
 
 # Portuus Server Stability Test Suite
-# Run after memtest86+ passes. Logs to /tmp/stress-test-results/
+# Run after memtest86+ passes. Logs to /var/log/stress-test-results/
 # Usage: nix-shell -p stress-ng lm_sensors smartmontools --run "sudo bash stress-test.sh"
+# Duration: ~80 minutes (5 tests with cooldown pauses)
 
 LOG_DIR="/var/log/stress-test-results"
 mkdir -p "$LOG_DIR"
