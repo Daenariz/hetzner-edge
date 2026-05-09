@@ -26,25 +26,6 @@ Internet ──► edge (Hetzner, static IP 178.105.18.167)
 
 Only the servers are on the Tailnet. Clients connect through the public edge.
 
-## DNS
-
-All DNS records point to the **edge** static IP (`178.105.18.167`):
-
-| Record | Type | Value |
-|---|---|---|
-| `portuus.de` | A | 178.105.18.167 |
-| `hs.portuus.de` | A | 178.105.18.167 |
-| `turn.portuus.de` | A | 178.105.18.167 |
-| `cloud.portuus.de` | CNAME | portuus.de |
-| `git.portuus.de` | CNAME | portuus.de |
-| `pages.portuus.de` | CNAME | portuus.de |
-| `gallery.portuus.de` | CNAME | portuus.de |
-| `vault.portuus.de` | CNAME | portuus.de |
-| `dav.portuus.de` | CNAME | portuus.de |
-| `share.portuus.de` | CNAME | portuus.de |
-| `mail.portuus.de` | CNAME | portuus.de |
-| MX `portuus.de` | MX | portuus.de |
-
 ## Deploy
 
 Deployments run via GitHub Actions (self-hosted runner on portuus) using [deploy-rs](https://github.com/serokell/deploy-rs).
