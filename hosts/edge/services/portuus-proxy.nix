@@ -19,7 +19,6 @@ let
         forceSSL = true;
         locations."/" = {
           proxyPass = "http://${portuusIP}";
-          proxyWebsockets = true;
           extraConfig = ''
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -60,7 +59,7 @@ in
 
     (mkProxy s.jirafeau.subdomain { })
 
-    # Matrix Synapse + Maubot (on root domain)
+    # Matrix Synapse + Maubot (on root domain) — needs WebSocket support
     {
       "${c.domain}" = {
         enableACME = true;
