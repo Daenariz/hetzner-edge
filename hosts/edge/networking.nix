@@ -1,4 +1,9 @@
+{ constants, ... }:
+
+let
+  c = constants;
+in
 {
   networking.hostName = "edge";
-  networking.domain = "portuus.de";
+  networking.domain = c.domain;
 }

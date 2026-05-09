@@ -1,3 +1,8 @@
+{ constants, ... }:
+
+let
+  c = constants;
+in
 {
   services.nginx = {
     appendHttpConfig = ''
@@ -16,14 +21,14 @@
       ];
 
       locations."/" = {
-        proxyPass = "http://100.64.0.6:80";
+        proxyPass = "http://${c.hosts.jetkvm.ip}:80";
         proxyWebsockets = false; # see below
 
         extraConfig = ''
           proxy_http_version 1.1;
 
-          proxy_set_header Host 100.64.0.6;
-          proxy_set_header Origin http://100.64.0.6;
+          proxy_set_header Host ${c.hosts.jetkvm.ip};
+          proxy_set_header Origin http://${c.hosts.jetkvm.ip};
 
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection $connection_upgrade;

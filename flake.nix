@@ -39,6 +39,8 @@
     let
       inherit (self) outputs;
 
+      constants = import ./constants.nix;
+
       supportedSystems = [
         "x86_64-linux"
       ];
@@ -52,7 +54,7 @@
         nixpkgs.lib.nixosSystem {
           inherit system modules;
           specialArgs = {
-            inherit inputs outputs;
+            inherit inputs outputs constants;
             lib =
               (import nixpkgs {
                 inherit system overlays;
@@ -89,13 +91,13 @@
         magicRollback = true;
         nodes = {
           portuus = {
-            hostname = "100.64.0.5";
+            hostname = constants.hosts.portuus.ip;
             profiles.system = {
               path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.portuus;
             };
           };
           edge = {
-            hostname = "100.64.0.4";
+            hostname = constants.hosts.edge.ip;
             profiles.system = {
               path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.edge;
             };

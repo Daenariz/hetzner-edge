@@ -27,7 +27,7 @@ in
 
   services.rustdesk-server = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false; # traffic comes via edge stream proxy
     signal = {
       enable = true;
       relayHosts = [ config.networking.domain ];

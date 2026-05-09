@@ -1,5 +1,9 @@
-{ inputs, ... }:
+{ inputs, constants, ... }:
 
+let
+  c = constants;
+  s = c.services.jirafeau;
+in
 {
   imports = [ inputs.synix.nixosModules.jirafeau ];
 
@@ -8,7 +12,8 @@
     dataDir = "/data/jirafeau";
     reverseProxy = {
       enable = true;
-      subdomain = "share";
+      subdomain = s.subdomain;
+      forceSSL = false; # TLS terminated on edge
     };
   };
 }

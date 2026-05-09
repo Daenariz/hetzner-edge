@@ -1,15 +1,9 @@
-{ outputs, config, ... }:
+{ outputs, config, constants, ... }:
 
 let
-  domain = config.networking.domain;
-
-  subdomain = "git";
-  fqdn = "${subdomain}.${domain}";
-
-  pages.subdomain = "pages";
-  pages.fqdn = "${pages.subdomain}.${domain}";
-  pages.port = 8090;
-  pages.aliases = [ ];
+  c = constants;
+  gl = c.services.gitlab;
+  pages = c.services.gitlab-pages;
 in
 {
   imports = [ outputs.nixosModules.gitlab ];
@@ -19,14 +13,17 @@ in
     statePath = "/data/gitlab";
     reverseProxy = {
       enable = true;
-      inherit subdomain;
+      subdomain = gl.subdomain;
+      forceSSL = false; # TLS terminated on edge
     };
+    # GitLab needs to know it's behind HTTPS even though local nginx is HTTP
+    https = true;
+    port = 443;
     mailIntegration = {
       enable = true;
       smtpHost = config.mailserver.fqdn;
     };
 
-    # TODO: set in nix-core
     pages = {
       enable = true;
       settings = {
@@ -34,7 +31,7 @@ in
         listen-proxy = [ "127.0.0.1:${builtins.toString pages.port}" ];
         listen-http = [ ];
         listen-https = [ ];
-        gitlab-server = "https://${fqdn}";
+        gitlab-server = "https://${gl.fqdn}";
       };
     };
     extraConfig = {
@@ -46,9 +43,6 @@ in
   };
 
   services.nginx.virtualHosts."${pages.fqdn}" = {
-    serverAliases = pages.aliases;
-    forceSSL = true;
-    enableACME = true;
     locations."/" = {
       proxyPass = "http://127.0.0.1:${builtins.toString pages.port}";
       proxyWebsockets = true;
