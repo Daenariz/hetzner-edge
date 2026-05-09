@@ -2,6 +2,7 @@
   inputs,
   config,
   lib,
+  constants,
   ...
 }:
 
@@ -49,6 +50,9 @@
   services.nginx.virtualHosts."${config.networking.domain}" = {
     enableACME = lib.mkForce false;
     forceSSL = lib.mkForce false;
+    listen = lib.mkForce [
+      { addr = constants.hosts.portuus.ip; port = 80; }
+    ];
   };
 
   # TODO: nix-core: toggle user if coturn and synapse are not running on the same machine
