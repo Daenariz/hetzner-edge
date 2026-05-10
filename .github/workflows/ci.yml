@@ -1,4 +1,4 @@
-name: Build Hosts
+name: CI
 
 on:
   pull_request:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   flake-check:
+    name: Flake Check
     runs-on: self-hosted
 
     steps:
@@ -15,6 +16,7 @@ jobs:
       - run: nix flake check
 
   build-hosts:
+    name: Build Hosts
     runs-on: self-hosted
     needs: flake-check
 
