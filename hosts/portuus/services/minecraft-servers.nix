@@ -48,6 +48,7 @@ in
         };
         whitelist = {
           Angiiiii = "956a108f-1b34-411b-97ea-08ab14484d4f";
+          Engelhammer333 = "2c95a6d9-1d40-4944-8934-5ca82e719bd5";
           JonShakespeare = "8578f586-dcaa-46c7-992b-77c98737b226";
           Morschlitz98 = "ec39f163-1cae-4673-8d7e-a626f706eac1";
           N3071GHT = "f4fc9eb2-8d82-49a6-8061-72c490ea5f9a";
