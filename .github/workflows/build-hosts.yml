@@ -1,20 +1,25 @@
 name: Build Hosts
 
 on:
-  workflow_run:
-    workflows: ["Flake Check"]
-    types:
-      - completed
+  pull_request:
+    branches:
+      - master
+      - develop
 
 jobs:
-  build-hosts:
+  flake-check:
     runs-on: self-hosted
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+      - run: nix flake check
+
+  build-hosts:
+    runs-on: self-hosted
+    needs: flake-check
+
+    steps:
+      - uses: actions/checkout@v4
       - run: |
           nix build .#nixosConfigurations.portuus.config.system.build.toplevel
           nix build .#nixosConfigurations.edge.config.system.build.toplevel
