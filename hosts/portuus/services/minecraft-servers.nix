@@ -40,6 +40,7 @@ in
         serverProperties = {
           gamemode = "survival";
           difficulty = "hard";
+          view-distance = "20";
           simulation-distance = "16";
           level-seed = "28618658336713097";
           server-port = 25565;
@@ -83,7 +84,13 @@ in
 
       amplified = {
         enable = true;
-        inherit (survival) package operators symlinks whitelist jvmOpts;
+        inherit (survival)
+          package
+          operators
+          symlinks
+          whitelist
+          jvmOpts
+          ;
         serverProperties = survival.serverProperties // {
           difficulty = "normal";
           level-seed = "646305128";

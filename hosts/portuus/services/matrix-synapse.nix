@@ -51,7 +51,10 @@
     enableACME = lib.mkForce false;
     forceSSL = lib.mkForce false;
     listen = lib.mkForce [
-      { addr = constants.hosts.portuus.ip; port = 80; }
+      {
+        addr = constants.hosts.portuus.ip;
+        port = 80;
+      }
     ];
   };
 
