@@ -14,10 +14,10 @@ jobs:
 
       - run: |
           cat <<EOF > ssh_config
-          # jobs run on portuus (100.64.0.5)
-          Host 100.64.0.5
+          # jobs run on portuus — localhost for self
+          Host 100.64.0.2
             Hostname 127.0.0.1
-            
+
           Host *
             Port 2299
             StrictHostKeyChecking no
