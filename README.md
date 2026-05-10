@@ -101,3 +101,7 @@ sudo cat /proc/$(pgrep -o nginx)/cmdline | tr '\0' '\n' | grep conf
 # Check current system derivation
 readlink /run/current-system
 ```
+
+## Acknowledgements
+
+Built with [synix](https://git.sid.ovh/sid/synix) by [sid](https://git.sid.ovh/sid) — a NixOS module framework that makes server configuration manageable. Thanks for the solid foundation, the reference setup at [sid.ovh](https://git.sid.ovh/sid/sid.ovh), and for building the original portuus infrastructure as a former member of this network. ❤️
