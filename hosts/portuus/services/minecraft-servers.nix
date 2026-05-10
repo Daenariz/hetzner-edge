@@ -80,6 +80,17 @@ in
         };
         whitelist = mkWhitelist ops;
       };
+
+      amplified = {
+        enable = true;
+        inherit (survival) package operators symlinks whitelist jvmOpts;
+        serverProperties = survival.serverProperties // {
+          difficulty = "normal";
+          level-seed = "646305128";
+          level-type = "minecraft:amplified";
+          server-port = 25567;
+        };
+      };
     };
   };
 }

@@ -49,6 +49,9 @@ rec {
     minecraft-creative = {
       port = 25566;
     };
+    minecraft-amplified = {
+      port = 25567;
+    };
     nextcloud = {
       subdomain = "cloud";
       fqdn = "cloud." + domain;

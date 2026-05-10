@@ -21,6 +21,7 @@ in
       # Minecraft
       server { listen ${toString mc.minecraft-survival.port}; proxy_pass ${ip}:${toString mc.minecraft-survival.port}; }
       server { listen ${toString mc.minecraft-creative.port}; proxy_pass ${ip}:${toString mc.minecraft-creative.port}; }
+      server { listen ${toString mc.minecraft-amplified.port}; proxy_pass ${ip}:${toString mc.minecraft-amplified.port}; }
 
       # Rustdesk
       server { listen ${toString rd.nat-test};  proxy_pass ${ip}:${toString rd.nat-test}; }
@@ -35,7 +36,7 @@ in
   networking.firewall = {
     allowedTCPPorts = [
       m.smtp m.submission-tls m.submission m.imap
-      mc.minecraft-survival.port mc.minecraft-creative.port
+      mc.minecraft-survival.port mc.minecraft-creative.port mc.minecraft-amplified.port
       rd.nat-test rd.id rd.relay rd.ws rd.ws-relay
     ];
     allowedUDPPorts = [
