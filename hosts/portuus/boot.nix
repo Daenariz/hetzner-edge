@@ -2,7 +2,10 @@
   boot.loader.grub.memtest86.enable = true;
 
   # Workaround for AMD Ryzen C-state freeze bug on X370 boards
-  boot.kernelParams = [ "processor.max_cstate=1" "idle=nomwait" ];
+  boot.kernelParams = [
+    "processor.max_cstate=1"
+    "idle=nomwait"
+  ];
 
   boot.loader.grub = {
     enable = true;

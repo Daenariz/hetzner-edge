@@ -1,4 +1,9 @@
-{ outputs, config, constants, ... }:
+{
+  outputs,
+  config,
+  constants,
+  ...
+}:
 
 let
   c = constants;
@@ -38,7 +43,11 @@ in
       gitlab = {
         pages_enabled = true;
         pages_external_url = "https://${pages.fqdn}";
-        trusted_proxies = [ c.hosts.edge.ip c.hosts.portuus.ip "127.0.0.1" ];
+        trusted_proxies = [
+          c.hosts.edge.ip
+          c.hosts.portuus.ip
+          "127.0.0.1"
+        ];
       };
     };
   };

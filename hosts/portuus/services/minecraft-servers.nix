@@ -84,7 +84,13 @@ in
 
       amplified = {
         enable = true;
-        inherit (survival) package operators symlinks whitelist jvmOpts;
+        inherit (survival)
+          package
+          operators
+          symlinks
+          whitelist
+          jvmOpts
+          ;
         serverProperties = survival.serverProperties // {
           difficulty = "normal";
           level-seed = "646305128";

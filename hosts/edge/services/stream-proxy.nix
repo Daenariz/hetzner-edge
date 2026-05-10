@@ -35,9 +35,18 @@ in
 
   networking.firewall = {
     allowedTCPPorts = [
-      m.smtp m.submission-tls m.submission m.imap
-      mc.minecraft-survival.port mc.minecraft-creative.port mc.minecraft-amplified.port
-      rd.nat-test rd.id rd.relay rd.ws rd.ws-relay
+      m.smtp
+      m.submission-tls
+      m.submission
+      m.imap
+      mc.minecraft-survival.port
+      mc.minecraft-creative.port
+      mc.minecraft-amplified.port
+      rd.nat-test
+      rd.id
+      rd.relay
+      rd.ws
+      rd.ws-relay
     ];
     allowedUDPPorts = [
       rd.id

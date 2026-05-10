@@ -7,7 +7,6 @@
     synix.url = "git+https://git.sid.ovh/sid/synix.git?ref=release-25.11";
     synix.inputs.nixpkgs.follows = "nixpkgs";
 
-
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 

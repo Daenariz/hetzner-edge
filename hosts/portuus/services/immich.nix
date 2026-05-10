@@ -1,4 +1,10 @@
-{ outputs, config, lib, constants, ... }:
+{
+  outputs,
+  config,
+  lib,
+  constants,
+  ...
+}:
 
 let
   c = constants;
