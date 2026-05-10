@@ -40,6 +40,7 @@ in
         serverProperties = {
           gamemode = "survival";
           difficulty = "hard";
+          view-distance = "20";
           simulation-distance = "16";
           level-seed = "28618658336713097";
           server-port = 25565;
