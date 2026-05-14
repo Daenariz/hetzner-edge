@@ -16,6 +16,7 @@ in
         port = 80;
       }
     ];
+
   };
 
   # nginx listens on the Tailnet IP — restart it after tailscaled comes up
