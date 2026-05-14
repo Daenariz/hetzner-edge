@@ -60,18 +60,19 @@ in
   # which breaks CSRF token validation. Override all proxy headers
   # in the location block (nginx doesn't inherit from parent when
   # any proxy_set_header is set in a child block).
-  services.nginx.virtualHosts."${gl.fqdn}".locations."/".extraConfig = lib.mkForce ''
-    client_max_body_size 0;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-    proxy_set_header X-Forwarded-Ssl on;
-    proxy_set_header X-Forwarded-Host $host;
-    proxy_set_header X-Forwarded-Server $host;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection $connection_upgrade;
-  '';
+  services.nginx.virtualHosts."${gl.fqdn}".locations."/" = {
+    proxyWebsockets = lib.mkForce false;
+    extraConfig = lib.mkForce ''
+      client_max_body_size 0;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header X-Forwarded-Ssl on;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Server $host;
+    '';
+  };
 
   services.nginx.virtualHosts."${pages.fqdn}" = {
     locations."/" = {
