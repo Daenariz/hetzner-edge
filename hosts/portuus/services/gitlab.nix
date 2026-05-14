@@ -43,6 +43,8 @@ in
       gitlab = {
         pages_enabled = true;
         pages_external_url = "https://${pages.fqdn}";
+      };
+      gitlab_rails = {
         trusted_proxies = [
           c.hosts.edge.ip
           c.hosts.portuus.ip
