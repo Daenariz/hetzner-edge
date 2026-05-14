@@ -1,28 +1,19 @@
 {
   "groups": {
-    "group:servers": ["edge", "portuus-server"],
-    "group:admin": ["steffen", "ulm", "pascal"],
-    "group:iot": ["jetkvm"]
+    "group:servers": ["edge@", "portuus-server@"],
+    "group:admin": ["steffen@", "ulm@", "pascal@"],
+    "group:iot": ["jetkvm@"]
   },
   "acls": [
-    // Admins can access servers and IoT devices, but not each other
     {"action": "accept", "src": ["group:admin"], "dst": ["group:servers:*"]},
     {"action": "accept", "src": ["group:admin"], "dst": ["group:iot:*"]},
-
-    // Servers can talk to each other (edge proxy <-> portuus services, deploy-rs)
     {"action": "accept", "src": ["group:servers"], "dst": ["group:servers:*"]}
-
-    // Everything else is denied by default:
-    // - admin devices cannot reach other admin devices
-    // - IoT devices cannot initiate connections
-    // - unknown nodes have no access
   ],
   "ssh": [
-    // Only admins can use Tailscale SSH to servers
     {
       "action": "accept",
       "src": ["group:admin"],
-      "dst": ["group:servers"],
+      "dst": ["edge@", "portuus-server@"],
       "users": ["autogroup:nonroot"]
     }
   ]

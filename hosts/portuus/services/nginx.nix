@@ -17,4 +17,12 @@ in
       }
     ];
   };
+
+  # nginx listens on the Tailnet IP — restart it after tailscaled comes up
+  # so the IP is available. Also restart nginx if tailscaled restarts.
+  systemd.services.nginx = {
+    after = [ "tailscaled-autoconnect.service" ];
+    wants = [ "tailscaled-autoconnect.service" ];
+    bindsTo = [ "tailscaled.service" ];
+  };
 }
