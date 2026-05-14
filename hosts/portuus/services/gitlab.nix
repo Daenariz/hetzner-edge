@@ -55,7 +55,6 @@ in
     };
   };
 
-
   services.nginx.virtualHosts."${pages.fqdn}" = {
     locations."/" = {
       proxyPass = "http://127.0.0.1:${builtins.toString pages.port}";
