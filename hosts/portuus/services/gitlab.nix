@@ -55,6 +55,24 @@ in
     };
   };
 
+  # Disable recommendedProxySettings for GitLab location so we can set
+  # X-Forwarded-Proto to "https" (portuus nginx $scheme is "http" since
+  # TLS terminates on edge). Without this, the include overwrites our header.
+  services.nginx.virtualHosts."${gl.fqdn}".locations."/" = {
+    recommendedProxySettings = lib.mkForce false;
+    extraConfig = lib.mkForce ''
+      client_max_body_size 0;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header X-Forwarded-Ssl on;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_set_header X-Forwarded-Server $hostname;
+      proxy_set_header Connection "";
+    '';
+  };
+
   services.nginx.virtualHosts."${pages.fqdn}" = {
     locations."/" = {
       proxyPass = "http://127.0.0.1:${builtins.toString pages.port}";
