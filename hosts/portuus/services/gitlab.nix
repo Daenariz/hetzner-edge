@@ -44,6 +44,7 @@ in
       gitlab = {
         pages_enabled = true;
         pages_external_url = "https://${pages.fqdn}";
+        ssh_port = gl.sshPort;
       };
       gitlab_rails = {
         trusted_proxies = [
