@@ -17,6 +17,7 @@ rec {
     gitlab = {
       subdomain = "git";
       fqdn = "git." + domain;
+      sshPort = 2222;
     };
     gitlab-pages = {
       subdomain = "pages";
