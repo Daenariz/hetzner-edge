@@ -24,7 +24,6 @@
       steffen = {
         aliases = [ "postmaster" ];
       };
-      jfk = { };
       lissy = { };
       ulm = { };
       nextcloud = {
@@ -33,15 +32,14 @@
       vaultwarden = {
         sendOnly = true;
       };
-      firefly-iii = {
-        sendOnly = true;
-      };
       gitlab = {
         sendOnly = true;
       };
     };
-    # Work around synix-26.05 mailserver wrapper bug: it sets the now-readOnly
-    # `name` field. Override the whole accounts map ourselves (without `name`).
+    # ─── BEGIN workaround: synix-26.05 mailserver wrapper ───────────────────
+    # synix sets the now-readOnly `accounts.<x>.name`, which trips when
+    # postfix reads it for sendOnly accounts. Override the whole map without
+    # `name` until synix is patched. Remove this block once upstream is fixed.
     accounts = lib.mkForce (
       lib.mapAttrs' (
         user: cfg:
@@ -56,5 +54,6 @@
         }
       ) config.mailserver._accounts
     );
+    # ─── END workaround ─────────────────────────────────────────────────────
   };
 }
