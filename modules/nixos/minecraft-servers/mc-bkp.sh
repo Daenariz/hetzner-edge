@@ -1,4 +1,4 @@
-#!/usr/env/bin bash
+#!/usr/bin/env bash
 
 if [ $# -ne 1 ]; then
     echo "Usage: mc-bkp <instance>"
