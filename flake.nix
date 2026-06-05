@@ -109,7 +109,7 @@
         in
         inputs.deploy-rs.lib.${system}.deployChecks self.deploy
         // {
-          inherit (inputs.synix.checks.${system}) pre-commit-check build-additions build-modifications;
+          inherit (inputs.synix.checks.${system}) pre-commit-check;
         }
       );
 
