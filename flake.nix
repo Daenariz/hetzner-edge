@@ -1,10 +1,10 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-old-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-old-stable.url = "github:nixos/nixpkgs/nixos-25.11";
 
-    synix.url = "git+https://git.sid.ovh/sid/synix.git?ref=release-25.11";
+    synix.url = "git+https://git.sid.ovh/sid/synix.git?ref=release-26.05";
     synix.inputs.nixpkgs.follows = "nixpkgs";
 
     deploy-rs.url = "github:serokell/deploy-rs";
@@ -13,20 +13,14 @@
     git-hooks.url = "github:cachix/git-hooks.nix";
     git-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.11";
+    nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-26.05";
     nixos-mailserver.inputs.nixpkgs.follows = "nixpkgs";
-
-    headplane.url = "github:tale/headplane";
-    headplane.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     nix-minecraft.inputs.nixpkgs.follows = "nixpkgs";
 
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    mcp-nixos.url = "github:utensils/mcp-nixos";
-    mcp-nixos.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -46,18 +40,19 @@
 
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-      overlays = [ inputs.synix.overlays.default ];
+      lib = nixpkgs.lib.extend (_final: _prev: { inherit (inputs.synix.lib) utils; });
 
       mkNixosConfiguration =
         system: modules:
         nixpkgs.lib.nixosSystem {
           inherit system modules;
           specialArgs = {
-            inherit inputs outputs constants;
-            lib =
-              (import nixpkgs {
-                inherit system overlays;
-              }).lib;
+            inherit
+              inputs
+              outputs
+              constants
+              lib
+              ;
           };
         };
     in

@@ -10,7 +10,7 @@
     certificateScheme = lib.mkForce "manual";
     certificateFile = "/var/lib/acme/mail.portuus.de/fullchain.pem";
     keyFile = "/var/lib/acme/mail.portuus.de/key.pem";
-    accounts = {
+    _accounts = {
       info = {
         aliases = [ "postmaster" ];
       };
