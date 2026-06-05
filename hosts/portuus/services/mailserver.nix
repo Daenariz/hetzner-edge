@@ -1,4 +1,9 @@
-{ inputs, lib, ... }:
+{
+  inputs,
+  config,
+  lib,
+  ...
+}:
 
 {
   imports = [ inputs.synix.nixosModules.mailserver ];
@@ -7,9 +12,11 @@
     enable = true;
     stateVersion = 3;
     # TLS certs from previous ACME run; edge handles ACME renewal going forward
-    certificateScheme = lib.mkForce "manual";
-    certificateFile = "/var/lib/acme/mail.portuus.de/fullchain.pem";
-    keyFile = "/var/lib/acme/mail.portuus.de/key.pem";
+    x509 = {
+      useACMEHost = lib.mkForce null;
+      certificateFile = "/var/lib/acme/mail.portuus.de/fullchain.pem";
+      privateKeyFile = "/var/lib/acme/mail.portuus.de/key.pem";
+    };
     _accounts = {
       info = {
         aliases = [ "postmaster" ];
@@ -33,5 +40,21 @@
         sendOnly = true;
       };
     };
+    # Work around synix-26.05 mailserver wrapper bug: it sets the now-readOnly
+    # `name` field. Override the whole accounts map ourselves (without `name`).
+    accounts = lib.mkForce (
+      lib.mapAttrs' (
+        user: cfg:
+        let
+          inherit (config.networking) domain;
+        in
+        lib.nameValuePair "${user}@${domain}" {
+          aliases = map (alias: "${alias}@${domain}") cfg.aliases;
+          inherit (cfg) sendOnly;
+          quota = "5G";
+          hashedPasswordFile = config.sops.secrets."mailserver/accounts/${user}".path;
+        }
+      ) config.mailserver._accounts
+    );
   };
 }
