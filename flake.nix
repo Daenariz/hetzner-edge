@@ -10,9 +10,6 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
 
-    git-hooks.url = "github:cachix/git-hooks.nix";
-    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
-
     nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-26.05";
     nixos-mailserver.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -34,13 +31,22 @@
 
       constants = import ./constants.nix;
 
-      supportedSystems = [
+      systems = [
         "x86_64-linux"
       ];
 
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      lib = nixpkgs.lib.extend (_final: _prev: inputs.synix.lib or { });
 
-      lib = nixpkgs.lib.extend (_final: _prev: { inherit (inputs.synix.lib) utils; });
+      inherit (lib.helpers) mkPkgs;
+
+      forAllSystems =
+        function:
+        lib.genAttrs systems (
+          system:
+          function (mkPkgs {
+            inherit system;
+          })
+        );
 
       mkNixosConfiguration =
         system: modules:
@@ -55,9 +61,16 @@
               ;
           };
         };
+
+      mkNode = name: ip: system: {
+        hostname = ip;
+        profiles.system = {
+          path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${name};
+        };
+      };
     in
     {
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (pkgs: import ./pkgs { inherit pkgs; });
 
       overlays = import ./overlays { inherit inputs; };
 
@@ -84,58 +97,22 @@
         autoRollback = true;
         magicRollback = true;
         nodes = {
-          portuus = {
-            hostname = constants.hosts.portuus.ip;
-            profiles.system = {
-              path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.portuus;
-            };
-          };
-          edge = {
-            hostname = constants.hosts.edge.ip;
-            profiles.system = {
-              path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.edge;
-            };
-          };
+          portuus = mkNode "portuus" constants.hosts.portuus.ip "x86_64-linux";
+          edge = mkNode "edge" constants.hosts.edge.ip "x86_64-linux";
         };
       };
 
-      formatter = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          config = self.checks.${system}.pre-commit-check.config;
-          inherit (config) package configFile;
-          script = ''
-            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
-          '';
-        in
-        pkgs.writeShellScriptBin "pre-commit-run" script
-      );
-
       checks = forAllSystems (
-        system:
+        pkgs:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
-          flakePkgs = self.packages.${system};
-          overlaidPkgs = import nixpkgs {
-            inherit system;
-            overlays = [ self.overlays.modifications ];
-          };
-          deployChecks = inputs.deploy-rs.lib.${system}.deployChecks self.deploy;
+          inherit (pkgs.stdenv.hostPlatform) system;
         in
-        deployChecks
+        inputs.deploy-rs.lib.${system}.deployChecks self.deploy
         // {
-          pre-commit-check = inputs.git-hooks.lib.${system}.run {
-            src = ./.;
-            hooks = {
-              nixfmt.enable = true;
-            };
-          };
-          build-packages = pkgs.linkFarm "flake-packages-${system}" flakePkgs;
-          build-overlays = pkgs.linkFarm "flake-overlays-${system}" {
-            # package = overlaidPkgs.package;
-          };
+          inherit (inputs.synix.checks.${system}) pre-commit-check build-additions build-modifications;
         }
       );
+
+      inherit (inputs.synix) formatter;
     };
 }

@@ -2,7 +2,7 @@
 
 {
   # synix packages accessible through 'pkgs.synix'
-  synix-packages = final: prev: { synix = inputs.synix.packages."${final.system}"; };
+  synix-packages = final: prev: { synix = inputs.synix.overlays.additions final prev; };
 
   # packages in `pkgs/` accessible through 'pkgs.local'
   local-packages = final: prev: { local = import ../pkgs { pkgs = final; }; };
@@ -28,7 +28,7 @@
   # unstable nixpkgs accessible through 'pkgs.unstable'
   unstable-packages = final: prev: {
     unstable = import inputs.nixpkgs-unstable {
-      system = final.system;
+      inherit (final) system;
       inherit (prev) config;
     };
   };
