@@ -816,11 +816,11 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1780663807,
-        "narHash": "sha256-umbomM8yhEunedE223T6Or9TaWzJefy9SJ2ZcGSXypw=",
+        "lastModified": 1780676669,
+        "narHash": "sha256-G3e32/JvanyvUOZ1MTjJw+OR5O1fkiQBg1BUhCF8mR0=",
         "ref": "release-26.05",
-        "rev": "e27ba786ede25bdc8695a942d0c3b5cd4382320b",
-        "revCount": 140,
+        "rev": "5a13ffe1ad03f03ce1629b16635b6827d6f6035e",
+        "revCount": 142,
         "type": "git",
         "url": "https://git.sid.ovh/sid/synix.git"
       },
