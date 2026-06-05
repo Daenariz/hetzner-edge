@@ -14,7 +14,7 @@ let
       forceSSL = true;
       locations."/" = {
         proxyPass = "http://${portuusIP}";
-        extraConfig = extraConfig;
+        inherit extraConfig;
       };
     };
   };
@@ -34,21 +34,23 @@ in
       "${c.domain}" = {
         enableACME = true;
         forceSSL = true;
-        locations."/_matrix".proxyPass = "http://${portuusIP}";
-        locations."/_synapse".proxyPass = "http://${portuusIP}";
-        locations."^~ /_matrix/maubot/" = {
-          proxyPass = "http://${portuusIP}";
-          proxyWebsockets = true;
+        locations = {
+          "/_matrix".proxyPass = "http://${portuusIP}";
+          "/_synapse".proxyPass = "http://${portuusIP}";
+          "^~ /_matrix/maubot/" = {
+            proxyPass = "http://${portuusIP}";
+            proxyWebsockets = true;
+          };
+          "= /.well-known/matrix/server".extraConfig = ''
+            default_type application/json;
+            return 200 '{"m.server":"${c.domain}:443"}';
+          '';
+          "= /.well-known/matrix/client".extraConfig = ''
+            default_type application/json;
+            add_header Access-Control-Allow-Origin "*";
+            return 200 '{"m.homeserver":{"base_url":"https://${c.domain}"}}';
+          '';
         };
-        locations."= /.well-known/matrix/server".extraConfig = ''
-          default_type application/json;
-          return 200 '{"m.server":"${c.domain}:443"}';
-        '';
-        locations."= /.well-known/matrix/client".extraConfig = ''
-          default_type application/json;
-          add_header Access-Control-Allow-Origin "*";
-          return 200 '{"m.homeserver":{"base_url":"https://${c.domain}"}}';
-        '';
       };
     }
   ];

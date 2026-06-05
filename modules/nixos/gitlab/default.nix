@@ -49,7 +49,7 @@ in
         port = 465;
         username = "gitlab@${domain}";
         passwordFile = sops.secrets."gitlab/smtp-password".path;
-        domain = domain;
+        inherit domain;
         enableStartTLSAuto = false;
         tls = true;
       };
@@ -88,7 +88,7 @@ in
     sops.secrets =
       let
         owner = cfg.user;
-        group = cfg.group;
+        inherit (cfg) group;
         mode = "0400";
       in
       {

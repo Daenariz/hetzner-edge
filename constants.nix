@@ -62,11 +62,13 @@ rec {
       fqdn = "dav." + domain;
     };
     rustdesk = {
-      ports.nat-test = 21115;
-      ports.id = 21116;
-      ports.relay = 21117;
-      ports.ws = 21118;
-      ports.ws-relay = 21119;
+      ports = {
+        nat-test = 21115;
+        id = 21116;
+        relay = 21117;
+        ws = 21118;
+        ws-relay = 21119;
+      };
     };
     vaultwarden = {
       subdomain = "vault";

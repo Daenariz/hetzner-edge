@@ -5,8 +5,7 @@
 
   services.nix-gitlab-runner = {
     enable = true;
-    authenticationTokenConfigFile =
-      config.sops.templates."gitlab-runner/authentication-token-config".path;
+    authenticationTokenConfigFile = config.sops.templates."gitlab-runner/authentication-token-config".path;
   };
 
   sops = {

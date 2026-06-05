@@ -26,7 +26,7 @@ let
       level = 4;
     });
 
-  mkWhitelist = names: lib.genAttrs names (name: getUuid name);
+  mkWhitelist = names: lib.genAttrs names getUuid;
 in
 {
   imports = [ outputs.nixosModules.minecraft-servers ];

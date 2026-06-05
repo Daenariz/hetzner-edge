@@ -16,7 +16,7 @@ in
     enable = true;
     reverseProxy = {
       enable = true;
-      subdomain = s.subdomain;
+      inherit (s) subdomain;
       forceSSL = false; # TLS terminated on edge
     };
     # Vaultwarden needs to know the public URL is HTTPS
