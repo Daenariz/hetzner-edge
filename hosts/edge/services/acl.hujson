@@ -4,6 +4,9 @@
     "group:admin": ["steffen@", "ulm@", "pascal@"],
     "group:iot": ["jetkvm@"]
   },
+  "tagOwners": {
+    "tag:server": ["group:admin"]
+  },
   "acls": [
     {"action": "accept", "src": ["group:admin"], "dst": ["group:servers:*"]},
     {"action": "accept", "src": ["group:admin"], "dst": ["group:iot:*"]},
@@ -13,7 +16,7 @@
     {
       "action": "accept",
       "src": ["group:admin"],
-      "dst": ["edge@", "portuus-server@"],
+      "dst": ["tag:server"],
       "users": ["autogroup:nonroot"]
     }
   ]
