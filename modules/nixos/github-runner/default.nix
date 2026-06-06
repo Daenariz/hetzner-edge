@@ -3,31 +3,29 @@
 let
   cfg = config.services.github-runners;
   enabled = lib.filterAttrs (_: r: r.enable) cfg;
-  names = builtins.attrNames enabled;
 
   inherit (lib)
-    genAttrs
-    mapAttrs
-    mkDefault
+    mapAttrs'
+    mapAttrsToList
     mkIf
+    nameValuePair
+    unique
     ;
 in
 {
   config = mkIf (enabled != { }) {
-    services.github-runners = mapAttrs (name: _: {
-      user = mkDefault name;
-      group = mkDefault name;
-    }) enabled;
+    users.groups = mapAttrs' (_: r: nameValuePair r.group { }) enabled;
+    users.users = mapAttrs' (
+      name: r:
+      nameValuePair r.user {
+        isSystemUser = true;
+        inherit (r) group;
+        home = "/var/lib/github-runner/${name}";
+        createHome = true;
+        description = "GitHub Runner (${name})";
+      }
+    ) enabled;
 
-    users.groups = genAttrs names (_: { });
-    users.users = genAttrs names (name: {
-      isSystemUser = true;
-      group = name;
-      home = "/var/lib/github-runner/${name}";
-      createHome = true;
-      description = "GitHub Runner (${name})";
-    });
-
-    nix.settings.trusted-users = names;
+    nix.settings.trusted-users = unique (mapAttrsToList (_: r: r.user) enabled);
   };
 }

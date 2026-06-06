@@ -10,6 +10,8 @@
 
   services.github-runners.portuus = {
     enable = true;
+    user = "portuus";
+    group = "portuus";
     url = "https://github.com/stherm/portuus";
     tokenFile = config.sops.secrets."github-runners/portuus/token".path;
 
