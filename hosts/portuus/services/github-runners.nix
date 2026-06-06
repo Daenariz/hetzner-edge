@@ -21,8 +21,7 @@
       gzip
     ];
 
-    extraEnvironment.DEPLOY_KEY_PATH =
-      config.sops.secrets."github-runners/portuus/deploy-key".path;
+    extraEnvironment.DEPLOY_KEY_PATH = config.sops.secrets."github-runners/portuus/deploy-key".path;
   };
 
   users.users.portuus.extraGroups = [ "kvm" ];
