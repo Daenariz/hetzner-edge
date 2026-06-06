@@ -1,54 +1,41 @@
-{ config, pkgs, ... }:
-
-let
-  user = "github-runner-portuus";
-  tokenFile = config.sops.secrets."github-runners/portuus/token".path;
-  deployKeyFile = config.sops.secrets."github-runners/portuus/deploy-key".path;
-  home = "/var/lib/github-runner/portuus";
-in
 {
-  nix.settings.trusted-users = [ user ];
+  outputs,
+  config,
+  pkgs,
+  ...
+}:
 
-  services.github-runners = {
-    portuus = {
-      enable = true;
-      url = "https://github.com/stherm/portuus";
-      inherit user;
-      group = user;
-      inherit tokenFile;
+{
+  imports = [ outputs.nixosModules.github-runner ];
 
-      extraPackages = with pkgs; [
-        deploy-rs
-        git
-        nix
-        openssh
-        gzip
-      ];
+  services.github-runners.portuus = {
+    enable = true;
+    user = "portuus";
+    group = "portuus";
+    url = "https://github.com/stherm/portuus";
+    tokenFile = config.sops.secrets."github-runners/portuus/token".path;
 
-      extraEnvironment = {
-        DEPLOY_KEY_PATH = deployKeyFile;
-      };
-    };
+    extraPackages = with pkgs; [
+      deploy-rs
+      git
+      nix
+      openssh
+      gzip
+    ];
+
+    extraEnvironment.DEPLOY_KEY_PATH = config.sops.secrets."github-runners/portuus/deploy-key".path;
   };
 
-  users.groups.${user} = { };
-  users.users.${user} = {
-    isSystemUser = true;
-    group = user;
-    extraGroups = [ "kvm" ];
-    description = "Github Runner for Portuus";
-    inherit home;
-    createHome = true;
-  };
+  users.users.portuus.extraGroups = [ "kvm" ];
 
-  sops =
+  sops.secrets =
     let
-      owner = user;
-      group = user;
+      owner = "portuus";
+      group = "portuus";
       mode = "0600";
     in
     {
-      secrets."github-runners/portuus/token" = { inherit owner group mode; };
-      secrets."github-runners/portuus/deploy-key" = { inherit owner group mode; };
+      "github-runners/portuus/token" = { inherit owner group mode; };
+      "github-runners/portuus/deploy-key" = { inherit owner group mode; };
     };
 }
