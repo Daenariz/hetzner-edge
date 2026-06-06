@@ -13,7 +13,7 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: nix flake check
 
   build-hosts:
@@ -22,7 +22,7 @@ jobs:
     needs: flake-check
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: |
           nix build .#nixosConfigurations.portuus.config.system.build.toplevel
           nix build .#nixosConfigurations.edge.config.system.build.toplevel
