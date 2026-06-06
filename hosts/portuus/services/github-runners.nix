@@ -10,8 +10,8 @@
 
   services.github-runners.portuus = {
     enable = true;
-    user = "portuus";
-    group = "portuus";
+    user = "github-runner-portuus";
+    group = "github-runner-portuus";
     url = "https://github.com/stherm/portuus";
     tokenFile = config.sops.secrets."github-runners/portuus/token".path;
 
@@ -26,12 +26,12 @@
     extraEnvironment.DEPLOY_KEY_PATH = config.sops.secrets."github-runners/portuus/deploy-key".path;
   };
 
-  users.users.portuus.extraGroups = [ "kvm" ];
+  users.users.github-runner-portuus.extraGroups = [ "kvm" ];
 
   sops.secrets =
     let
-      owner = "portuus";
-      group = "portuus";
+      owner = "github-runner-portuus";
+      group = "github-runner-portuus";
       mode = "0600";
     in
     {
