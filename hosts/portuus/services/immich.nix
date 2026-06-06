@@ -17,7 +17,7 @@ in
     enable = true;
     reverseProxy = {
       enable = true;
-      subdomain = s.subdomain;
+      inherit (s) subdomain;
       forceSSL = false; # TLS terminated on edge
     };
     settings.server.externalDomain = lib.mkForce "https://${s.fqdn}";

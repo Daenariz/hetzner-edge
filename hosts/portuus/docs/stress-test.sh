@@ -62,13 +62,13 @@ monitor_temps() {
 }
 monitor_temps &
 MONITOR_PID=$!
-trap "kill $MONITOR_PID 2>/dev/null; wait $MONITOR_PID 2>/dev/null" EXIT
+trap 'kill $MONITOR_PID 2>/dev/null; wait $MONITOR_PID 2>/dev/null' EXIT
 
 # Test 1: CPU only
 log ""
 log "=== TEST 1: CPU STRESS (15 min) ==="
 log "Start: $(date)"
-stress-ng --cpu $(nproc) --cpu-method all --timeout 900 --metrics 2>&1 | tee -a "$LOG"
+stress-ng --cpu "$(nproc)" --cpu-method all --timeout 900 --metrics 2>&1 | tee -a "$LOG"
 log "End: $(date)"
 log "Temps after CPU test:"
 sensors >> "$LOG" 2>&1 || true
@@ -90,7 +90,7 @@ sleep 30
 log ""
 log "=== TEST 3: CPU + RAM COMBINED (15 min) ==="
 log "Start: $(date)"
-stress-ng --cpu $(nproc) --vm 2 --vm-bytes 50% --timeout 900 --metrics 2>&1 | tee -a "$LOG"
+stress-ng --cpu "$(nproc)" --vm 2 --vm-bytes 50% --timeout 900 --metrics 2>&1 | tee -a "$LOG"
 log "End: $(date)"
 log "Temps after combined test:"
 sensors >> "$LOG" 2>&1 || true
@@ -110,7 +110,7 @@ sleep 30
 log ""
 log "=== TEST 5: FULL SYSTEM STRESS (20 min) ==="
 log "Start: $(date)"
-stress-ng --cpu $(nproc) --vm 2 --vm-bytes 50% --iomix 2 --timeout 1200 --metrics 2>&1 | tee -a "$LOG"
+stress-ng --cpu "$(nproc)" --vm 2 --vm-bytes 50% --iomix 2 --timeout 1200 --metrics 2>&1 | tee -a "$LOG"
 log "End: $(date)"
 
 # Final state

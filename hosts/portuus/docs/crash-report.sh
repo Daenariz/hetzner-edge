@@ -68,7 +68,7 @@ dmesg --level=err,crit,alert,emerg 2>/dev/null | tail -30 >> "$LOG" 2>&1 || true
 # EDAC (ECC memory errors if supported)
 log ""
 log "=== EDAC (Memory Error Detection) ==="
-find /sys/devices/system/edac -name "ce_count" -o -name "ue_count" 2>/dev/null | while read f; do
+find /sys/devices/system/edac -name "ce_count" -o -name "ue_count" 2>/dev/null | while read -r f; do
     echo "$f: $(cat "$f")" >> "$LOG"
 done || log "no EDAC support"
 

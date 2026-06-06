@@ -28,7 +28,7 @@ in
     datadir = "/data/nextcloud";
     reverseProxy = {
       enable = true;
-      subdomain = s.subdomain;
+      inherit (s) subdomain;
       forceSSL = false; # TLS terminated on edge
     };
     # Nextcloud needs to know it's behind HTTPS (edge terminates TLS)

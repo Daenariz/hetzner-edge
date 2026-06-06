@@ -4,7 +4,9 @@ let
   c = constants;
 in
 {
-  networking.hostName = "portuus";
-  networking.domain = c.domain;
-  networking.hostId = "cec23325"; # ZFS requires a host id
+  networking = {
+    hostName = "portuus";
+    inherit (c) domain;
+    hostId = "cec23325"; # ZFS requires a host id
+  };
 }

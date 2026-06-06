@@ -8,118 +8,124 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "ahci"
-    "usb_storage"
-    "sd_mod"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
-
-  fileSystems."/" = {
-    device = "rpool/root";
-    fsType = "zfs";
+  boot = {
+    initrd = {
+      availableKernelModules = [
+        "xhci_pci"
+        "ahci"
+        "usb_storage"
+        "sd_mod"
+      ];
+      kernelModules = [ ];
+    };
+    kernelModules = [ "kvm-amd" ];
+    extraModulePackages = [ ];
   };
 
-  fileSystems."/home" = {
-    device = "rpool/home";
-    fsType = "zfs";
-  };
+  fileSystems = {
+    "/" = {
+      device = "rpool/root";
+      fsType = "zfs";
+    };
 
-  fileSystems."/nix" = {
-    device = "rpool/nix";
-    fsType = "zfs";
-  };
+    "/home" = {
+      device = "rpool/home";
+      fsType = "zfs";
+    };
 
-  fileSystems."/tmp" = {
-    device = "rpool/tmp";
-    fsType = "zfs";
-  };
+    "/nix" = {
+      device = "rpool/nix";
+      fsType = "zfs";
+    };
 
-  fileSystems."/var" = {
-    device = "rpool/var";
-    fsType = "zfs";
-  };
+    "/tmp" = {
+      device = "rpool/tmp";
+      fsType = "zfs";
+    };
 
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-label/BOOT1";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
-  };
+    "/var" = {
+      device = "rpool/var";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data" = {
-    device = "dpool/data";
-    fsType = "zfs";
-  };
+    "/boot" = {
+      device = "/dev/disk/by-label/BOOT1";
+      fsType = "vfat";
+      options = [
+        "fmask=0077"
+        "dmask=0077"
+      ];
+    };
 
-  fileSystems."/data/firefly-iii" = {
-    device = "dpool/data/firefly-iii";
-    fsType = "zfs";
-  };
+    "/data" = {
+      device = "dpool/data";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/gitea" = {
-    device = "dpool/data/gitea";
-    fsType = "zfs";
-  };
+    "/data/firefly-iii" = {
+      device = "dpool/data/firefly-iii";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/gitlab" = {
-    device = "dpool/data/gitlab";
-    fsType = "zfs";
-  };
+    "/data/gitea" = {
+      device = "dpool/data/gitea";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/immich" = {
-    device = "dpool/data/immich";
-    fsType = "zfs";
-  };
+    "/data/gitlab" = {
+      device = "dpool/data/gitlab";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/jellyfin" = {
-    device = "dpool/data/jellyfin";
-    fsType = "zfs";
-  };
+    "/data/immich" = {
+      device = "dpool/data/immich";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/jirafeau" = {
-    device = "dpool/data/jirafeau";
-    fsType = "zfs";
-  };
+    "/data/jellyfin" = {
+      device = "dpool/data/jellyfin";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/matrix-synapse" = {
-    device = "dpool/data/matrix-synapse";
-    fsType = "zfs";
-  };
+    "/data/jirafeau" = {
+      device = "dpool/data/jirafeau";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/maubot" = {
-    device = "dpool/data/maubot";
-    fsType = "zfs";
-  };
+    "/data/matrix-synapse" = {
+      device = "dpool/data/matrix-synapse";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/nextcloud" = {
-    device = "dpool/data/nextcloud";
-    fsType = "zfs";
-  };
+    "/data/maubot" = {
+      device = "dpool/data/maubot";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/peertube" = {
-    device = "dpool/data/peertube";
-    fsType = "zfs";
-  };
+    "/data/nextcloud" = {
+      device = "dpool/data/nextcloud";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/rss-bridge" = {
-    device = "dpool/data/rss-bridge";
-    fsType = "zfs";
-  };
+    "/data/peertube" = {
+      device = "dpool/data/peertube";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/syncthing" = {
-    device = "dpool/data/syncthing";
-    fsType = "zfs";
-  };
+    "/data/rss-bridge" = {
+      device = "dpool/data/rss-bridge";
+      fsType = "zfs";
+    };
 
-  fileSystems."/data/tt-rss" = {
-    device = "dpool/data/tt-rss";
-    fsType = "zfs";
+    "/data/syncthing" = {
+      device = "dpool/data/syncthing";
+      fsType = "zfs";
+    };
+
+    "/data/tt-rss" = {
+      device = "dpool/data/tt-rss";
+      fsType = "zfs";
+    };
   };
 
   swapDevices = [

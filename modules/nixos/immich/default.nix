@@ -51,7 +51,7 @@ in
       "${fqdn}" =
         mkVirtualHost {
           inherit config fqdn;
-          port = cfg.port;
+          inherit (cfg) port;
           ssl = cfg.reverseProxy.forceSSL;
         }
         // {
@@ -64,7 +64,7 @@ in
     sops =
       let
         owner = cfg.user;
-        group = cfg.group;
+        inherit (cfg) group;
         mode = "0440";
       in
       {

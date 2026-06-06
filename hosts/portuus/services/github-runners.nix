@@ -13,7 +13,7 @@ in
     portuus = {
       enable = true;
       url = "https://github.com/stherm/portuus";
-      user = user;
+      inherit user;
       group = user;
       inherit tokenFile;
 
@@ -37,7 +37,7 @@ in
     group = user;
     extraGroups = [ "kvm" ];
     description = "Github Runner for Portuus";
-    home = home;
+    inherit home;
     createHome = true;
   };
 
