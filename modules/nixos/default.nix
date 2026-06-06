@@ -1,5 +1,6 @@
 {
   common = import ./common;
+  github-runner = import ./github-runner;
   gitlab = import ./gitlab;
   immich = import ./immich;
   minecraft-servers = import ./minecraft-servers;
