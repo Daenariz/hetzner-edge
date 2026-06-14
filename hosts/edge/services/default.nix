@@ -7,10 +7,10 @@
   imports = [
     ./coturn.nix
     ./headscale.nix
-    ./jetkvm-proxy.nix
+    # ./jetkvm-proxy.nix
     ./nginx.nix
     ./openssh.nix
-    ./portuus-proxy.nix
+    ./futro-proxy.nix
     ./stream-proxy.nix
 
     outputs.nixosModules.tailscale

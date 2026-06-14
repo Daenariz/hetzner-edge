@@ -1,11 +1,11 @@
 # All public HTTP traffic enters via edge and is proxied over the Tailnet
-# to portuus's internal nginx (port 80, no TLS).
+# to futro's internal nginx (port 80, no TLS).
 # TLS is terminated on edge only.
 { lib, constants, ... }:
 
 let
   c = constants;
-  portuusIP = c.hosts.portuus.ip;
+  futroIP = c.hosts.futro.ip;
   s = c.services;
 
   mkProxy = subdomain: extraConfig: {
@@ -13,7 +13,7 @@ let
       enableACME = true;
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://${portuusIP}";
+        proxyPass = "http://${futroIP}";
         inherit extraConfig;
       };
     };
@@ -21,13 +21,13 @@ let
 in
 {
   services.nginx.virtualHosts = lib.mkMerge [
-    (mkProxy s.gitlab.subdomain "client_max_body_size 0;")
-    (mkProxy s.gitlab-pages.subdomain "")
-    (mkProxy s.nextcloud.subdomain "client_max_body_size 1G;")
-    (mkProxy s.immich.subdomain "client_max_body_size 5G;")
+    # (mkProxy s.forgejo.subdomain "client_max_body_size 0;")
+    # (mkProxy s.gitlab-pages.subdomain "")
+    # (mkProxy s.nextcloud.subdomain "client_max_body_size 1G;")
+    # (mkProxy s.immich.subdomain "client_max_body_size 5G;")
     (mkProxy s.vaultwarden.subdomain "")
     (mkProxy s.radicale.subdomain "")
-    (mkProxy s.jirafeau.subdomain "")
+    # (mkProxy s.jirafeau.subdomain "")
 
     # Matrix Synapse + Maubot (on root domain)
     {
@@ -35,10 +35,10 @@ in
         enableACME = true;
         forceSSL = true;
         locations = {
-          "/_matrix".proxyPass = "http://${portuusIP}";
-          "/_synapse".proxyPass = "http://${portuusIP}";
+          "/_matrix".proxyPass = "http://${futroIP}";
+          "/_synapse".proxyPass = "http://${futroIP}";
           "^~ /_matrix/maubot/" = {
-            proxyPass = "http://${portuusIP}";
+            proxyPass = "http://${futroIP}";
             proxyWebsockets = true;
           };
           "= /.well-known/matrix/server".extraConfig = ''

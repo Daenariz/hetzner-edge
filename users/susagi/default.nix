@@ -1,5 +1,5 @@
 {
-  normalUsers.pascal = {
+  normalUsers.susagi= {
     extraGroups = [
       "wheel"
     ];

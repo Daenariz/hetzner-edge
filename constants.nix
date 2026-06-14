@@ -1,58 +1,61 @@
+########################## TO BE EDITED ##############################
+
 rec {
-  domain = "portuus.de";
+  domain = "negitorodon.de";
 
   hosts = {
-    portuus = {
+    futro = {
       ip = "100.64.0.2";
     };
     edge = {
       ip = "100.64.0.1";
     };
-    jetkvm = {
-      ip = "100.64.0.3";
-    };
+    # ???
+  #   jetkvm = {
+  #     ip = "100.64.0.3";
+  #   };
   };
 
   services = {
-    gitlab = {
+    forgejo = {
       subdomain = "git";
       fqdn = "git." + domain;
       sshPort = 2222;
     };
-    gitlab-pages = {
-      subdomain = "pages";
-      fqdn = "pages." + domain;
-      port = 8090;
-    };
+    # gitlab-pages = {
+    #   subdomain = "pages";
+    #   fqdn = "pages." + domain;
+    #   port = 8090;
+    # };
     headscale = {
-      subdomain = "hs";
-      fqdn = "hs." + domain;
+      subdomain = "head";
+      fqdn = "head." + domain;
     };
-    immich = {
-      subdomain = "gallery";
-      fqdn = "gallery." + domain;
-      port = 2283;
-    };
-    jirafeau = {
-      subdomain = "share";
-      fqdn = "share." + domain;
-    };
+    # immich = {
+    #   subdomain = "gallery";
+    #   fqdn = "gallery." + domain;
+    #   port = 2283;
+    # };
+    # jirafeau = {
+    #   subdomain = "share";
+    #   fqdn = "share." + domain;
+    # };
     matrix-synapse = {
       fqdn = domain;
       port = 8008;
     };
-    maubot = {
-      port = 29316;
-    };
-    minecraft-survival = {
-      port = 25565;
-    };
-    minecraft-creative = {
-      port = 25566;
-    };
-    minecraft-amplified = {
-      port = 25567;
-    };
+    # maubot = {
+    #   port = 29316;
+    # };
+    # minecraft-survival = {
+    #   port = 25565;
+    # };
+    # minecraft-creative = {
+    #   port = 25566;
+    # };
+    # minecraft-amplified = {
+    #   port = 25567;
+    # };
     nextcloud = {
       subdomain = "cloud";
       fqdn = "cloud." + domain;
@@ -61,15 +64,15 @@ rec {
       subdomain = "dav";
       fqdn = "dav." + domain;
     };
-    rustdesk = {
-      ports = {
-        nat-test = 21115;
-        id = 21116;
-        relay = 21117;
-        ws = 21118;
-        ws-relay = 21119;
-      };
-    };
+    # rustdesk = {
+    #   ports = {
+    #     nat-test = 21115;
+    #     id = 21116;
+    #     relay = 21117;
+    #     ws = 21118;
+    #     ws-relay = 21119;
+    #   };
+    # };
     vaultwarden = {
       subdomain = "vault";
       fqdn = "vault." + domain;

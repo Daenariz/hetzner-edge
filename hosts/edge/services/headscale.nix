@@ -14,7 +14,7 @@
     openFirewall = true;
     reverseProxy = {
       enable = true;
-      subdomain = "hs";
+      subdomain = "head";
     };
   };
 
