@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SSD='/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_117449503'
+SSD='/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_120752128'
 MNT='/mnt'
 SWAP_GB=4
 
