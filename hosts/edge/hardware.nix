@@ -12,17 +12,15 @@
   ];
 
   boot = {
-    initrd = {
-      availableKernelModules = [
-        "ahci"
-        "xhci_pci"
-        "virtio_pci"
-        "virtio_scsi"
-        "sd_mod"
-        "sr_mod"
-      ];
-      kernelModules = [ ];
-    };
+    initrd.availableKernelModules = [
+      "ahci"
+      "xhci_pci"
+      "virtio_pci"
+      "virtio_scsi"
+      "sd_mod"
+      "sr_mod"
+    ];
+    initrd.kernelModules = [ ];
     kernelModules = [ ];
     extraModulePackages = [ ];
   };
@@ -34,14 +32,12 @@
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/BOOT";
-    fsType = "vfat";
-    options = [
-      "fmask=0022"
-      "dmask=0022"
-    ];
+    fsType = "ext4";
   };
 
-  swapDevices = [ { device = "/dev/disk/by-label/SWAP"; } ];
+  swapDevices = [
+    { device = "/dev/disk/by-label/SWAP"; }
+  ];
 
   networking.useDHCP = lib.mkDefault true;
 
